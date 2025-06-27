@@ -15,7 +15,7 @@ async fn test_sqlite_basic_operations() {
     sqlx::query(
         "CREATE TABLE test_addresses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            address TEXT NOT NULL,
+            address BINARY(20) NOT NULL,
             name TEXT
         )"
     )
@@ -61,7 +61,7 @@ async fn setup_mysql_test() -> Option<MySqlPool> {
             if sqlx::query(
                 "CREATE TABLE IF NOT EXISTS ethereum_addresses (
                     id INT AUTO_INCREMENT PRIMARY KEY,
-                    address VARCHAR(42) NOT NULL,
+                    address BINARY(20) NOT NULL,
                     label VARCHAR(255),
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )"
@@ -129,7 +129,7 @@ async fn setup_postgres_test(table_suffix: &str) -> Option<PgPool> {
             if sqlx::query(&format!(
                 "CREATE TABLE {} (
                     id SERIAL PRIMARY KEY,
-                    address VARCHAR(42) NOT NULL,
+                    address BYTEA NOT NULL,
                     label VARCHAR(255),
                     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
                 )", table_name
@@ -310,7 +310,7 @@ async fn test_postgres_zero_and_special_addresses() {
         sqlx::query(&format!(
             "CREATE TABLE {} (
                 user_id INTEGER,
-                wallet_address VARCHAR(42) NOT NULL,
+                wallet_address BYTEA NOT NULL,
                 wallet_name VARCHAR(255),
                 is_primary BOOLEAN DEFAULT FALSE,
                 balance_wei NUMERIC(78, 0) DEFAULT 0

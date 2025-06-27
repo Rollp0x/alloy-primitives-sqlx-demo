@@ -18,9 +18,9 @@ async fn test_sqlite_from_row() {
 
     // Create test table
     sqlx::query(
-        "CREATE TABLE test_addresses (
+        "CREATE TABLE ethereum_addresses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            address TEXT NOT NULL,
+            address BINARY(20) NOT NULL,
             name TEXT
         )"
     )
@@ -33,14 +33,14 @@ async fn test_sqlite_from_row() {
         address: address!("0x742d35Cc6635C0532925a3b8D42cC72b5c2A9A1d"),
         name: "Test User".to_string(),
     };
-    sqlx::query("INSERT INTO test_addresses (address, name) VALUES (?, ?)")
+    sqlx::query("INSERT INTO ethereum_addresses (address, name) VALUES (?, ?)")
         .bind(&user_info.address)
         .bind(&user_info.name)
         .execute(&pool)
         .await
         .expect("Failed to insert address");
 
-    let user_info_from_db: UserInfo = sqlx::query_as("SELECT id, address, name FROM test_addresses WHERE address = ?")
+    let user_info_from_db: UserInfo = sqlx::query_as("SELECT id, address, name FROM ethereum_addresses WHERE address = ?")
         .bind(&user_info.address)
         .fetch_one(&pool)
         .await
@@ -56,17 +56,18 @@ async fn setup_mysql_test() -> Option<MySqlPool> {
         .unwrap_or_else(|_| "mysql://root:123456@localhost:3306/test_db".to_string());
     match MySqlPool::connect(&database_url).await {
         Ok(pool) => {
+            // Drop table if exists to ensure a fresh table each time
+            let _ = sqlx::query("DROP TABLE IF EXISTS ethereum_addresses").execute(&pool).await.unwrap();
             if sqlx::query(
-                "CREATE TABLE IF NOT EXISTS test_addresses (
+                "CREATE TABLE IF NOT EXISTS ethereum_addresses (
                     id INT AUTO_INCREMENT PRIMARY KEY,
-                    address VARCHAR(42) NOT NULL,
+                    address BINARY(20) NOT NULL,
                     name VARCHAR(255)
                 )"
             )
             .execute(&pool)
             .await
             .is_ok() {
-                let _ = sqlx::query("DELETE FROM test_addresses").execute(&pool).await;
                 Some(pool)
             } else {
                 None
@@ -88,14 +89,14 @@ async fn test_mysql_from_row() {
         address: address!("0x742d35Cc6635C0532925a3b8D42cC72b5c2A9A1d"),
         name: "Test User".to_string(),
     };
-    sqlx::query("INSERT INTO test_addresses (address, name) VALUES (?, ?)")
+    sqlx::query("INSERT INTO ethereum_addresses (address, name) VALUES (?, ?)")
         .bind(&user_info.address)
         .bind(&user_info.name)
         .execute(&pool)
         .await
         .expect("Failed to insert address");
 
-    let user_info_from_db: UserInfo = sqlx::query_as("SELECT id, address, name FROM test_addresses WHERE address = ?")
+    let user_info_from_db: UserInfo = sqlx::query_as("SELECT id, address, name FROM ethereum_addresses WHERE address = ?")
         .bind(&user_info.address)
         .fetch_one(&pool)
         .await
@@ -111,14 +112,14 @@ async fn setup_postgres_test(table_suffix: &str) -> Option<PgPool> {
         .unwrap_or_else(|_| "postgres://postgres:123456@localhost:5432/test_db".to_string());
     match PgPool::connect(&database_url).await {
         Ok(pool) => {
-            let table_name = format!("test_addresses_{}", table_suffix);
+            let table_name = format!("ethereum_addresses_{}", table_suffix);
             let _ = sqlx::query(&format!("DROP TABLE IF EXISTS {}", table_name))
                 .execute(&pool)
                 .await;
             if sqlx::query(&format!(
                 "CREATE TABLE {} (
                     id SERIAL PRIMARY KEY,
-                    address VARCHAR(42) NOT NULL,
+                    address BYTEA NOT NULL,
                     name VARCHAR(255)
                 )", table_name
             ))
@@ -140,7 +141,7 @@ async fn test_postgres_from_row() {
         println!("⚠️  Skipping PostgreSQL test - no connection available");
         return;
     };
-    let table_name = "test_addresses_fromrow";
+    let table_name = "ethereum_addresses_fromrow";
     let user_info = UserInfo {
         id: None,
         address: address!("0x742d35Cc6635C0532925a3b8D42cC72b5c2A9A1d"),
