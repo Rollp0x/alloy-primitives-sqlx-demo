@@ -4,15 +4,12 @@ version = "0.1.0"
 edition = "2024"
 
 [features]
-alloc = []
-default = ["alloc"]
-std = ["alloc"]
-full = []
 
 [dependencies]
-alloy-primitives = { git = "https://github.com/Rollp0x/core.git", branch = "feature/sqlx-ruint", package = "alloy-primitives", features = ["sqlx","serde"] }
-# alloy-primitives = { path = "/Users/zero/Documents/GitHub/core/crates/primitives", features = ["sqlx","serde"] }
+alloy-primitives = { git = "https://github.com/Rollp0x/core.git", branch = "feature/sqlx", package = "alloy-primitives", features = ["sqlx","serde"] }
+# alloy-primitives = { path = "/Users/zero/Documents/GitHub/core/crates/primitives", features = ["sqlx","serde","std"] }
 sqlx = { version = "0.8", features = ["mysql", "sqlite", "postgres","runtime-async-std"] }
 tokio = { version = "1.0", features = ["full"] }
 anyhow = "1.0"
 serde = "1.0.219"
+derive_more = { version = "2.0", default-features = false }

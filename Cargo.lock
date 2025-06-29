@@ -26,7 +26,7 @@ checksum = "683d7910e743518b0e34f1186f92494becacb047c7b6bf616c96772180fef923"
 [[package]]
 name = "alloy-primitives"
 version = "1.2.1"
-source = "git+https://github.com/Rollp0x/core.git?branch=feature%2Fsqlx-ruint#47d98ccdc69d7a5fee5ef1d33d0196abec2f4883"
+source = "git+https://github.com/Rollp0x/core.git?branch=feature%2Fsqlx#f23466840bbfbe8c8366ab37d78541170d98e9e9"
 dependencies = [
  "alloy-rlp",
  "bytes",
@@ -2533,6 +2533,7 @@ version = "0.1.0"
 dependencies = [
  "alloy-primitives",
  "anyhow",
+ "derive_more",
  "serde",
  "sqlx",
  "tokio",

@@ -2,7 +2,7 @@
 use sqlx::{Row, SqlitePool, MySqlPool, PgPool};
 use alloy_primitives::{Address, address};
 use alloy_primitives::{wrap_fixed_bytes, FixedBytes};
-use alloy_primitives::private::derive_more;
+
 extern crate alloc;
 
 wrap_fixed_bytes! {
