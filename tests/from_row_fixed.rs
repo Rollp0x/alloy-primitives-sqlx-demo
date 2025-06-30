@@ -2,9 +2,7 @@ use sqlx::FromRow;
 use alloy_primitives::{Address, address};
 use serde::{Deserialize, Serialize};
 use sqlx::{SqlitePool, MySqlPool, PgPool};
-
 use alloy_primitives::{wrap_fixed_bytes, FixedBytes};
-extern crate alloc;
 
 wrap_fixed_bytes! {
     pub struct MyFixedBytes<32>;

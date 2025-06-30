@@ -3,8 +3,6 @@ use sqlx::{Row, SqlitePool, MySqlPool, PgPool};
 use alloy_primitives::{Address, address};
 use alloy_primitives::{wrap_fixed_bytes, FixedBytes};
 
-extern crate alloc;
-
 wrap_fixed_bytes! {
     struct MyFixedBytes<32>;
 }
